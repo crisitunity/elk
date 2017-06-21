@@ -1,0 +1,13 @@
+# Use %{TRANSACT} as the match.
+
+TRANSACT (?:%{BANKTRANSACT}|%{CCTRANSACT})
+BANKTRANSACT %{DATE_EU:trans_date},"%{TRANSACTION}",%{INT:account},(\$%{NUMBER:amnt_debit})?,(\$%{NUMBER:amnt_credit})?,\$%{NUMBER:balance}
+CCTRANSACT %{DATE_EU:trans_date},"3657   %{CCDESC:trans_info}%{CCSUBURB:suburb}%{CCCOUNTRY:country}",%{INT:account},(\$%{NUMBER:amnt_debit})?,(\$%{NUMBER:amnt_credit})?
+
+CCCOUNTRY [A-Z]{2}
+CCSUBURB  [A-Z ]{13}
+CCDESC [a-zA-Z0-9 ]{25}
+
+TRANSACTION %{TRANSTYPE:trans_type} %{TRANSINFO:trans_info}
+TRANSINFO %{GREEDYDATA}
+TRANSTYPE (EFTPOS|BPAY|PAY ANYONE TO|TFR TO BOQ VISA CARD|VISA DEBIT|Direct Debit|Direct Credit|Payroll Credit|TRANSFER TO LOAN|ATM WITHDRAWAL|ATM OPERATOR FEE|OTHER BANK ATM WITHDRAWAL|WITHDRAWAL)?
